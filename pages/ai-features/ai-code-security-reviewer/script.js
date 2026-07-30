@@ -2,6 +2,7 @@
    Autonomous AI Code Reviewer & Security Linter JS
    ============================================================ */
 
+   
 document.addEventListener('DOMContentLoaded', () => {
   const airCodeInput = document.getElementById('airCodeInput');
   const btnScanCode = document.getElementById('btnScanCode');
