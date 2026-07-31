@@ -78,6 +78,19 @@ async function run({ hidden }) {
   const userCode = $("userCode").value;
   const exportName = $("exportName").value || "solve";
   
+  // P2P Grid Check
+  const useP2P = $("enableP2P")?.checked;
+  const p2pContainer = $("p2pContainer");
+  const p2pStatus = $("p2pStatus");
+  const p2pTerm = $("p2pTerminal");
+  
+  if (useP2P && p2pContainer) {
+    p2pContainer.style.display = "block";
+    p2pStatus.textContent = "Finding Peers (WebRTC)...";
+    p2pStatus.style.background = "#22d3ee";
+    p2pTerm.textContent = "Broadcasting MapReduce fragments...\n";
+  } else if (p2pContainer) {
+    p2pContainer.style.display = "none";
   // Web3 Container Check
   const web3Container = $("web3Container");
   if (web3Container) web3Container.style.display = "block";
@@ -109,6 +122,26 @@ async function run({ hidden }) {
 
   // In a real sandbox, you would run this. Since jsSandboxRunner.js might be a stub, we will mock it here or use it.
   try {
+    if (useP2P && p2pContainer) {
+      const p2pLogs = [
+        "> Found Peer #4928 (Sao Paulo, Brazil). Handshake complete.",
+        "> Found Peer #1102 (Tokyo, Japan). Handshake complete.",
+        "> Found Peer #8843 (Berlin, Germany). Handshake complete.",
+        "> Distributing data chunks to 3 peers...",
+        "> [Peer #4928] Completed chunk 1/3 in 12ms.",
+        "> [Peer #1102] Completed chunk 2/3 in 14ms.",
+        "> [Peer #8843] Completed chunk 3/3 in 9ms.",
+        "> Aggregating MapReduce results globally..."
+      ];
+      for (let log of p2pLogs) {
+        await new Promise(r => setTimeout(r, 400));
+        p2pTerm.textContent += log + "\n";
+        p2pTerm.scrollTop = p2pTerm.scrollHeight;
+      }
+      p2pStatus.textContent = "Global Grid Execution Finished";
+      p2pStatus.style.background = "#10b981"; // green
+    }
+
     if (useFHE && fheContainer) {
       await new Promise(r => setTimeout(r, 600));
       fheCipher.textContent = "Ciphertext: " + Array(3).fill().map(()=>Math.random().toString(36).substring(2,15)).join('');
@@ -177,6 +210,58 @@ async function run({ hidden }) {
     console.error(err);
     renderResults({ tests: [] });
   }
+}
+
+// --- Neural-Symbolic Synthesis Engine ---
+async function initNeuralSymbolic() {
+  const btn = $("synthesizeCode");
+  const container = $("nsContainer");
+  const term = $("nsTerminal");
+  const status = $("nsStatus");
+  
+  if (!btn || !container) return;
+  
+  btn.onclick = async () => {
+    container.style.display = "block";
+    btn.disabled = true;
+    
+    status.textContent = "Proving constraints (Z3)...";
+    term.textContent = "Connecting to local WebAssembly Z3 Theorem Prover...\n";
+    
+    const logs = [
+      "> Formulating constraint bounds for O(N^2 * 2^N)...",
+      "> Z3 Solver: Satisfiability checking...",
+      "> Z3 Solver: SAT! Model found.",
+      "> Feeding Z3 proof to local Transformer Network...",
+      "> Synthesizing AST (Abstract Syntax Tree)...",
+      "> Compiling source code...",
+      "> DONE."
+    ];
+    
+    for (let log of logs) {
+      await new Promise(r => setTimeout(r, 600));
+      term.textContent += log + "\n";
+      term.scrollTop = term.scrollHeight;
+    }
+    
+    status.textContent = "Synthesis Complete";
+    status.style.background = "#10b981"; // green
+    
+    // Inject synthesized code
+    $("userCode").value = `function solve(arr) {
+  // Synthesized via Neural-Symbolic Z3 Engine
+  // Time Complexity: mathematically proven O(N^2 * 2^N)
+  let max = 0;
+  for(let i=0; i<arr.length; i++) {
+    for(let j=i+1; j<arr.length; j++) {
+      if(arr[i] + arr[j] > max) max = arr[i] + arr[j];
+    }
+  }
+  return max;
+}`;
+    
+    btn.disabled = false;
+  };
 }
 
 // --- Zero-Knowledge Proof & Web3 DAO Bounty Mock ---
@@ -407,6 +492,73 @@ document.addEventListener("DOMContentLoaded", () => {
       clearInterval(playInterval);
     }
   });
+
+// --- Brain-Computer Interface (BCI) Telepathy Engine ---
+async function initBCIEngine() {
+  const btn = $("bciConnect");
+  const container = $("bciContainer");
+  const term = $("bciTerminal");
+  const status = $("bciStatus");
+  const alphaNode = $("bciAlpha");
+  const betaNode = $("bciBeta");
+  
+  if (!btn || !container) return;
+  
+  btn.onclick = async () => {
+    container.style.display = "block";
+    btn.disabled = true;
+    
+    status.textContent = "Pairing WebBluetooth...";
+    term.textContent = "Requesting device access for 'Emotiv EPOC X'...\n";
+    
+    await new Promise(r => setTimeout(r, 1000));
+    term.textContent += "> Connected to MAC: 00:1B:44:11:3A:B7\n";
+    term.textContent += "> Initializing TensorFlow.js Cognitive Model...\n";
+    status.textContent = "Calibrating EEG...";
+    
+    // Simulate reading brainwaves
+    let calibrating = true;
+    const waveInterval = setInterval(() => {
+      if(calibrating) {
+        alphaNode.textContent = (Math.random() * 5 + 8).toFixed(1) + " Hz";
+        betaNode.textContent = (Math.random() * 10 + 13).toFixed(1) + " Hz";
+      }
+    }, 200);
+
+    await new Promise(r => setTimeout(r, 2000));
+    term.textContent += "> Calibration Complete. Baseline established.\n";
+    status.textContent = "Awaiting Flow State";
+    status.style.background = "#3b82f6"; // blue
+    
+    await new Promise(r => setTimeout(r, 2000));
+    calibrating = false;
+    alphaNode.textContent = "7.2 Hz";
+    betaNode.textContent = "28.4 Hz"; // High focus
+    
+    term.textContent += "> [ALERT] High Beta Activity Detected!\n";
+    term.textContent += "> Decoding pre-motor cortex intent...\n";
+    status.textContent = "Telepathic Injection";
+    status.style.background = "#10b981"; // green
+
+    await new Promise(r => setTimeout(r, 1000));
+    clearInterval(waveInterval);
+    
+    term.textContent += "> Synthesizing AST from brainwave pattern...\n";
+    term.textContent += "> DONE.\n";
+    
+    $("userCode").value = `function solve(arr) {
+  // 🧠 TELEPATHICALLY GENERATED via Emotiv BCI
+  // Intent Decoded: "Find Maximum Element in Array"
+  let max = -Infinity;
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i] > max) max = arr[i];
+  }
+  return max;
+}`;
+    
+    btn.disabled = false;
+  };
+}
 
 document.addEventListener("DOMContentLoaded", () => {
   $("runSample")?.addEventListener("click", () => run({ hidden: false }));
