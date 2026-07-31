@@ -4,6 +4,13 @@
 
 const visualizers = [
   {
+    name: 'MVCC Garbage Collection (Vacuum)',
+    path: '/pages/visualizers/mvcc-visualizer/mvcc-visualizer.html',
+    category: 'Database Internals',
+    icon: 'fa-database',
+    desc: 'Interactive visualizer for Postgres-style Multi-Version Concurrency Control (MVCC) and Garbage Collection sweeps.',
+  },
+  {
     name: 'Quotient Filter Data Structure',
     path: '/pages/visualizers/quotient-filter/quotient-filter.html',
     category: 'Data Structures',
@@ -663,6 +670,20 @@ const visualizers = [
     category: 'Systems & OS',
     icon: 'fa-envelope',
     desc: 'Visualize TCP handshake, congestion control, and flow control.',
+  },
+  {
+    name: 'TCP Congestion Window Slow Start & AIMD',
+    path: '/pages/visualizers/tcp-aimd-visualizer/tcp-aimd-visualizer.html',
+    category: 'Networking',
+    icon: 'fa-network-wired',
+    desc: 'Visualize TCP Congestion Window Slow Start & AIMD mechanism with simulated packet drops.',
+  },
+  {
+    name: 'TCP Nagle & Delayed ACK Deadlock',
+    path: '/pages/visualizers/tcp-nagle-visualizer/tcp-nagle-visualizer.html',
+    category: 'Networking',
+    icon: 'fa-network-wired',
+    desc: "Visualize the infamous deadlock interaction between Nagle's Algorithm and Delayed ACK causing 40ms-200ms latency spikes.",
   },
   {
     name: 'Git Visualizer',
@@ -2022,6 +2043,13 @@ const visualizers = [
     category: 'Distributed Systems',
     icon: 'fa-globe',
     desc: 'See how content is delivered from edge locations to users via CDN with origin pull, edge caching, and TTL-based cache invalidation.',
+  },
+  {
+    name: 'CDN Edge Cache Stampede Simulator',
+    path: '/pages/visualizers/cdn-cache-stampede-simulator/cdn-cache-stampede-simulator.html',
+    category: 'Distributed Systems',
+    icon: 'fa-bolt',
+    desc: 'Visualize the Cache Stampede (Thundering Herd) problem where simultaneous requests crash the origin, and see how Request Collapsing (Promise Locking) solves it.',
   },
   {
     name: 'JavaScript Event Loop Visualizer',
