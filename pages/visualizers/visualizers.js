@@ -4,6 +4,34 @@
 
 const visualizers = [
   {
+    name: 'Generational GC: CMS vs G1',
+    path: '/pages/visualizers/generational-gc-profiler/generational-gc-profiler.html',
+    category: 'System Design',
+    icon: 'fa-trash-alt',
+    desc: 'Visualize and profile Stop-The-World pause times between CMS and G1 garbage collection algorithms.',
+  },
+  {
+    name: 'Eventual Consistency Anti-Entropy Gossip Protocol',
+    path: '/pages/visualizers/eventual-consistency-gossip/eventual-consistency-gossip.html',
+    category: 'Distributed Systems',
+    icon: 'fa-network-wired',
+    desc: 'Visualize how databases like Cassandra use Gossip Protocol and Merkle Trees to achieve eventual consistency and repair stale nodes via anti-entropy.',
+  },
+  {
+    name: 'Redis Cluster Hash Slot Migration Storm',
+    path: '/pages/visualizers/redis-cluster-migration-storm/redis-cluster-migration-storm.html',
+    category: 'Distributed Systems',
+    icon: 'fa-server',
+    desc: 'Visualize 16,384 hash slots distributed across 3 Master nodes. Trigger a failure, animate Slave promotion, and see the Migration Storm re-synchronize quorum.',
+  },
+  {
+    name: 'MVCC Garbage Collection (Vacuum)',
+    path: '/pages/visualizers/mvcc-visualizer/mvcc-visualizer.html',
+    category: 'Database Internals',
+    icon: 'fa-database',
+    desc: 'Interactive visualizer for Postgres-style Multi-Version Concurrency Control (MVCC) and Garbage Collection sweeps.',
+  },
+  {
     name: 'Quotient Filter Data Structure',
     path: '/pages/visualizers/quotient-filter/quotient-filter.html',
     category: 'Data Structures',
@@ -30,6 +58,13 @@ const visualizers = [
     category: 'AI & ML',
     icon: 'fa-brain',
     desc: 'Visualize a recurrent neural network acting as a content-addressable memory system.',
+  },
+  {
+    name: 'Transformer QKV Attention Flow',
+    path: '/pages/visualizers/transformer-qkv-visualizer/transformer-qkv-visualizer.html',
+    category: 'AI & ML',
+    icon: 'fa-project-diagram',
+    desc: 'Interactive visualizer demonstrating the Query, Key, and Value (QKV) dot-product attention mechanism used in LLMs.',
   },
   {
     name: 'Distributed Tracing Simulator',
@@ -86,6 +121,20 @@ const visualizers = [
     category: 'Security & Crypto',
     icon: 'fa-lock',
     desc: 'Interactive visualizer for the TLS 1.3 cryptographic handshake protocol (1-RTT and 0-RTT).',
+  },
+  {
+    name: 'LMAX Disruptor Simulator',
+    path: '/pages/visualizers/lmax-disruptor-simulator/lmax-disruptor-simulator.html',
+    category: 'Distributed Systems',
+    icon: 'fa-microchip',
+    desc: 'Visualize a lock-free Ring Buffer with Producers and Consumers using memory barriers and sequence numbers.',
+  },
+  {
+    name: 'TLB Thrashing & Page Fault Simulator',
+    path: '/pages/visualizers/tlb-page-fault-simulator/tlb-page-fault-simulator.html',
+    category: 'OS & Architecture',
+    icon: 'fa-microchip',
+    desc: 'Simulate virtual memory mapping, TLB cache thrashing via stride access, and costly disk page faults.',
   },
   // ── Sorting & Searching ──
   {
@@ -665,6 +714,20 @@ const visualizers = [
     desc: 'Visualize TCP handshake, congestion control, and flow control.',
   },
   {
+    name: 'TCP Congestion Window Slow Start & AIMD',
+    path: '/pages/visualizers/tcp-aimd-visualizer/tcp-aimd-visualizer.html',
+    category: 'Networking',
+    icon: 'fa-network-wired',
+    desc: 'Visualize TCP Congestion Window Slow Start & AIMD mechanism with simulated packet drops.',
+  },
+  {
+    name: 'TCP Nagle & Delayed ACK Deadlock',
+    path: '/pages/visualizers/tcp-nagle-visualizer/tcp-nagle-visualizer.html',
+    category: 'Networking',
+    icon: 'fa-network-wired',
+    desc: "Visualize the infamous deadlock interaction between Nagle's Algorithm and Delayed ACK causing 40ms-200ms latency spikes.",
+  },
+  {
     name: 'Git Visualizer',
     path: '/pages/ai-features/git-visualizer/git-visualizer.html',
     category: 'Systems & OS',
@@ -746,6 +809,13 @@ const visualizers = [
 
   // ── Distributed Systems ──
   {
+    name: 'CRDT Sequence Interleaving Sandbox',
+    path: '/pages/visualizers/crdt-visualizer/crdt-visualizer.html',
+    category: 'Distributed Systems',
+    icon: 'fa-network-wired',
+    desc: 'Simulate offline edits on two disconnected clients, then visualize mathematical merging resolving edits concurrently without conflicts.',
+  },
+  {
     name: 'Chord vs Skip Graph DHT Routing',
     path: '/pages/visualizers/chord-vs-skip-graph/chord-vs-skip-graph.html',
     category: 'Distributed Systems',
@@ -774,11 +844,25 @@ const visualizers = [
     desc: 'Load balance perfectly without using any Consistent Hash Rings.',
   },
   {
+    name: 'PoW vs PoS Sybil Simulator',
+    path: '/pages/visualizers/sybil-attack-simulator/sybil-attack-simulator.html',
+    category: 'Distributed Systems',
+    icon: 'fa-shield-alt',
+    desc: 'Visualize how Proof-of-Work and Proof-of-Stake defend against 51% Sybil attacks.',
+  },
+  {
     name: 'Raft Simulator',
     path: '/pages/ai-features/raft-simulator/raft-simulator.html',
     category: 'Distributed Systems',
     icon: 'fa-anchor',
     desc: 'Interactive Raft consensus algorithm: leader election and log replication.',
+  },
+  {
+    name: 'Raft Split-Brain Simulator',
+    path: '/pages/visualizers/raft-split-brain-simulator/raft-split-brain-simulator.html',
+    category: 'Distributed Systems',
+    icon: 'fa-network-wired',
+    desc: 'Visualize Raft network partitions and the split-brain infinite election timeout loop.',
   },
   {
     name: 'PBFT Simulator',
@@ -906,6 +990,13 @@ const visualizers = [
     icon: 'fa-clone',
     desc: 'Simulate the Rsync algorithm showing rolling hashes and delta transfers.',
   },
+  {
+    name: 'Dynamo-Style Leaderless Quorum Sandbox',
+    path: '/pages/visualizers/dynamo-quorum/dynamo-quorum.html',
+    category: 'Distributed Systems',
+    icon: 'fa-server',
+    desc: 'Interactive leaderless quorum replication, version vector conflict resolution, read repair, and Merkle anti-entropy sync.',
+  },
 
   // ── Security & Cryptography ──
   {
@@ -935,6 +1026,20 @@ const visualizers = [
     category: 'Security & Crypto',
     icon: 'fa-user-secret',
     desc: 'Zero-Knowledge Proof concepts visualized step by step.',
+  },
+  {
+    name: 'zk-SNARKs Sandbox',
+    path: '/pages/visualizers/zk-snarks-sandbox/zk-snarks-sandbox.html',
+    category: 'Security & Crypto',
+    icon: 'fa-microchip',
+    desc: 'A cryptography sandbox demonstrating the core mechanism of zk-SNARKs.',
+  },
+  {
+    name: 'Hybrid Post-Quantum TLS 1.3 Handshake Lab',
+    path: '/pages/visualizers/pqc-tls13/pqc-tls13.html',
+    category: 'Security & Crypto',
+    icon: 'fa-key',
+    desc: 'Interactive Hybrid Post-Quantum TLS 1.3 handshake combining classical ECDHE and NIST ML-KEM/Kyber lattice key encapsulation.',
   },
   {
     name: 'Shamir Secret Sharing',
@@ -1036,6 +1141,20 @@ const visualizers = [
     icon: 'fa-earth-americas',
     desc: 'Traveling Salesman Problem solvers: nearest neighbor, 2-opt, and more.',
   },
+  {
+    name: 'Bézier Curve & De Casteljau Sandbox',
+    path: '/pages/visualizers/bezier-curve/bezier-curve.html',
+    category: 'Math & Geometry',
+    icon: 'fa-bezier-curve',
+    desc: "Explore Bézier curves and De Casteljau's recursive linear interpolation algorithm step-by-step.",
+  },
+  {
+    name: 'Rigid Body Physics Engine Sandbox',
+    path: '/pages/visualizers/rigid-body-physics/rigid-body-physics.html',
+    category: 'Math & Geometry',
+    icon: 'fa-cubes',
+    desc: 'Interactive 2D rigid body physics engine demonstrating rotational dynamics, impulse resolution, and SAT collision detection.',
+  },
 
   // ── AI & Machine Learning ──
   {
@@ -1065,6 +1184,13 @@ const visualizers = [
     category: 'AI & ML',
     icon: 'fa-eye',
     desc: 'Visualize attention heads in Transformer architectures.',
+  },
+  {
+    name: 'LLM KV-Cache & vLLM PagedAttention Simulator',
+    path: '/pages/visualizers/llm-kv-cache/llm-kv-cache.html',
+    category: 'AI & ML',
+    icon: 'fa-microchip',
+    desc: 'Interactive simulator comparing traditional contiguous KV-caching vs PagedAttention memory management for LLM serving.',
   },
   {
     name: 'LLM Inference Visualizer',
@@ -1449,6 +1575,13 @@ const visualizers = [
     desc: 'Spectre side-channel attack — speculative execution visualized.',
   },
   {
+    name: 'Octree 3D Spatial Partitioning Sandbox',
+    path: '/pages/visualizers/octree-3d/octree-3d.html',
+    category: 'Special',
+    icon: 'fa-cubes',
+    desc: 'Interactive 3D spatial partitioning using Octrees, point cloud presets, and perspective ray-casting queries.',
+  },
+  {
     name: 'DNS Resolution Visualizer',
     path: '/pages/visualizers/dns-simulator/dns-simulator.html',
     category: 'Distributed Systems',
@@ -1475,6 +1608,13 @@ const visualizers = [
     category: 'Systems & OS',
     icon: 'fa-tower-broadcast',
     desc: 'Visualize Peer-to-Peer connections, STUN hole-punching, and TURN relays.',
+  },
+  {
+    name: 'Multi-Ruleset Cellular Automata Sandbox',
+    path: '/pages/visualizers/cellular-automata/cellular-automata.html',
+    category: 'Special',
+    icon: 'fa-dice',
+    desc: "Explore Conway's Life, Wireworld, and Brian's Brain cellular automata with interactive editing and presets.",
   },
   {
     name: 'GraphQL N+1 & DataLoader Visualizer',
@@ -1559,6 +1699,13 @@ const visualizers = [
     category: 'Algorithms',
     icon: 'fa-shapes',
     desc: 'Interactive BGP Route Propagation & Hijacking Simulator | Algo-Infinity-Verse visualization.',
+  },
+  {
+    name: 'BGP Route Dampening Sandbox | Algo-Infinity-Verse',
+    path: '/pages/visualizers/bgp-route-dampening-sandbox/bgp-route-dampening-sandbox.html',
+    category: 'Algorithms',
+    icon: 'fa-bolt',
+    desc: 'Interactive BGP Route Dampening Sandbox | Algo-Infinity-Verse visualization.',
   },
   {
     name: 'Centroid Decomposition Visualizer · Algo Infinity Verse',
@@ -2024,6 +2171,13 @@ const visualizers = [
     desc: 'See how content is delivered from edge locations to users via CDN with origin pull, edge caching, and TTL-based cache invalidation.',
   },
   {
+    name: 'CDN Edge Cache Stampede Simulator',
+    path: '/pages/visualizers/cdn-cache-stampede-simulator/cdn-cache-stampede-simulator.html',
+    category: 'Distributed Systems',
+    icon: 'fa-bolt',
+    desc: 'Visualize the Cache Stampede (Thundering Herd) problem where simultaneous requests crash the origin, and see how Request Collapsing (Promise Locking) solves it.',
+  },
+  {
     name: 'JavaScript Event Loop Visualizer',
     path: '/pages/visualizers/event-loop-visualizer/event-loop-visualizer.html',
     category: 'Systems & OS',
@@ -2057,6 +2211,13 @@ const visualizers = [
     category: 'Distributed Systems',
     icon: 'fa-network-wired',
     desc: 'Simulate gossip protocol dissemination and phi-accrual failure detection across a cluster of nodes.',
+  },
+  {
+    name: 'Raft Consensus Split-Brain Simulator',
+    path: '/pages/visualizers/raft-partition-simulator/raft-partition-simulator.html',
+    category: 'Distributed Systems',
+    icon: 'fa-house-medical',
+    desc: 'Simulate Raft node elections, AppendEntries replication, network partitions, and log healing.',
   },
   {
     name: 'Join Optimizer Visualizer',
