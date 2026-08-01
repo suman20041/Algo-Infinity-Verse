@@ -25,6 +25,15 @@ const languages = [
 
   // ── Enterprise ──
   {
+    name: 'C#',
+    path: '/pages/learning/csharp-learning/csharp-learning.html',
+    category: 'Enterprise',
+    icon: 'fa-hashtag',
+    isBrandIcon: false,
+    langKey: 'csharp',
+    desc: 'Modern, type-safe, and object-oriented. The heart of the .NET ecosystem — from web APIs to cloud services.',
+  },
+  {
     name: 'Java',
     path: '/pages/learning/java-learning/java-learning.html',
     category: 'Enterprise',
@@ -52,16 +61,6 @@ const languages = [
     isBrandIcon: true,
     langKey: 'c',
     desc: 'The foundation of modern computing. Efficient, portable, and the language that built operating systems.',
-  },
-  {
-    name: 'Rust',
-    path: '/pages/rust-academy/rust-academy.html',
-    category: 'Systems',
-    icon: 'fa-cubes',
-    isBrandIcon: false,
-    langKey: 'rust',
-    desc: 'Fearless concurrency, memory safety without a garbage collector, and blazingly fast performance.',
-    svgIcon: `<img src="https://cdn.simpleicons.org/rust/dea584" alt="Rust" style="width:1em;height:1em;display:block;">`
   },
 
   // ── Web ──
@@ -96,6 +95,42 @@ const languages = [
     desc: 'The language of Ethereum smart contracts. Statically typed, contract-oriented, and designed for the EVM.',
     svgIcon: `<img src="https://cdn.simpleicons.org/solidity/fbc4ab" alt="Solidity" style="width:1em;height:1em;display:block;">`
   },
+
+  // ── Mobile / JVM ──
+  {
+    name: 'Kotlin',
+    path: '/pages/learning/kotlin-learning/kotlin-learning.html',
+    category: 'General Purpose',
+    icon: 'fa-code',
+    isBrandIcon: false,
+    langKey: 'kotlin',
+    desc: 'Modern, concise, and safe JVM language. Preferred for Android development with seamless Java interop and coroutines.',
+    svgIcon: `<img src="https://cdn.simpleicons.org/kotlin/a8c8f0" alt="Kotlin" style="width:1em;height:1em;display:block;">`
+  },
+
+  // ── Apple / Swift ──
+  {
+    name: 'Swift',
+    path: '/pages/learning/swift-learning/swift-learning.html',
+    category: 'General Purpose',
+    icon: 'fa-swift',
+    isBrandIcon: true,
+    langKey: 'swift',
+    desc: "Apple's modern, type-safe language for iOS, macOS, and beyond. Optionals, protocols, and closures make safe, expressive code the default.",
+    svgIcon: `<img src="https://cdn.simpleicons.org/swift/f2a88a" alt="Swift" style="width:1em;height:1em;display:block;">`
+  },
+
+  // ── Mobile / Cross-platform ──
+  {
+    name: 'Flutter',
+    path: '/pages/learning/flutter-learning/flutter-learning.html',
+    category: 'General Purpose',
+    icon: 'fa-mobile-screen',
+    isBrandIcon: false,
+    langKey: 'flutter',
+    desc: 'Google\'s UI toolkit for building beautiful, natively compiled apps for mobile, web, and desktop from a single Dart codebase.',
+    svgIcon: `<img src="https://cdn.simpleicons.org/flutter/a8c8dc" alt="Flutter" style="width:1em;height:1em;display:block;">`
+  },
 ];
 
 /* ─── Categories ─── */
@@ -110,8 +145,11 @@ const langColors = {
   cplusplus: '#f34b7d',
   c: '#888888',
   php: '#777BB4',
-  rust: '#dea584',
   solidity: '#fbc4ab',
+  kotlin: '#a8c8f0',
+  csharp: '#e8b0b0',
+  swift: '#f2a88a',
+  flutter: '#a8c8dc',
 };
 
 /* ─── DOM refs ─── */
@@ -236,6 +274,8 @@ grid.addEventListener('click', (e) => {
 
 /* ─── Keyboard shortcut: ⌘K / Ctrl+K ─── */
 document.addEventListener('keydown', (e) => {
+  // Keyboard shortcuts are desktop-only — no-op on mobile viewports (< 768px).
+  if (!window.areKeyboardShortcutsEnabled()) return;
   if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
     e.preventDefault();
     searchInput.focus();
