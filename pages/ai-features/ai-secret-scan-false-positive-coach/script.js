@@ -8,6 +8,7 @@
   var DEMO_STRIPE_MASKED = ['sk', 'test', '************************'].join('_');
   var DEMO_AWS_DOC_EXAMPLE = 'wJalrXUtnFEMI/K7MDENG/bPxRfiCY' + 'EXAMPLEKEY';
 
+  
   var DEMO_DIFF =
     "@@ -12,6 +12,14 @@ module.exports = {\n" +
     "+  # DEMO LEAK SAMPLE — synthetic only, rotate if ever real\n" +
