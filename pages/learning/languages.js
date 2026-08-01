@@ -14,6 +14,15 @@ const languages = [
     desc: 'Beginner-friendly, versatile, and powerful. Ideal for data science, web development, automation, and AI.',
   },
   {
+    name: 'Ruby',
+    path: '/pages/learning/ruby-learning/ruby-learning.html',
+    category: 'General Purpose',
+    icon: 'fa-gem',
+    isBrandIcon: false,
+    langKey: 'ruby',
+    desc: "A language designed for developer happiness — elegant syntax, pure OOP, expressive blocks, and the power of Ruby on Rails.",
+  },
+  {
     name: 'JavaScript',
     path: '/pages/learning/javascript-learning/javascript-learning.html',
     category: 'Web',
@@ -24,6 +33,15 @@ const languages = [
   },
 
   // ── Enterprise ──
+  {
+    name: 'C#',
+    path: '/pages/learning/csharp-learning/csharp-learning.html',
+    category: 'Enterprise',
+    icon: 'fa-hashtag',
+    isBrandIcon: false,
+    langKey: 'csharp',
+    desc: 'Modern, type-safe, and object-oriented. The heart of the .NET ecosystem — from web APIs to cloud services.',
+  },
   {
     name: 'Java',
     path: '/pages/learning/java-learning/java-learning.html',
@@ -52,16 +70,6 @@ const languages = [
     isBrandIcon: true,
     langKey: 'c',
     desc: 'The foundation of modern computing. Efficient, portable, and the language that built operating systems.',
-  },
-  {
-    name: 'Rust',
-    path: '/pages/rust-academy/rust-academy.html',
-    category: 'Systems',
-    icon: 'fa-cubes',
-    isBrandIcon: false,
-    langKey: 'rust',
-    desc: 'Fearless concurrency, memory safety without a garbage collector, and blazingly fast performance.',
-    svgIcon: `<img src="https://cdn.simpleicons.org/rust/dea584" alt="Rust" style="width:1em;height:1em;display:block;">`
   },
 
   // ── Web ──
@@ -96,6 +104,53 @@ const languages = [
     desc: 'The language of Ethereum smart contracts. Statically typed, contract-oriented, and designed for the EVM.',
     svgIcon: `<img src="https://cdn.simpleicons.org/solidity/fbc4ab" alt="Solidity" style="width:1em;height:1em;display:block;">`
   },
+
+  // ── Mobile / JVM ──
+  {
+    name: 'Kotlin',
+    path: '/pages/learning/kotlin-learning/kotlin-learning.html',
+    category: 'General Purpose',
+    icon: 'fa-code',
+    isBrandIcon: false,
+    langKey: 'kotlin',
+    desc: 'Modern, concise, and safe JVM language. Preferred for Android development with seamless Java interop and coroutines.',
+    svgIcon: `<img src="https://cdn.simpleicons.org/kotlin/a8c8f0" alt="Kotlin" style="width:1em;height:1em;display:block;">`
+  },
+
+  // ── Apple / Swift ──
+  {
+    name: 'Swift',
+    path: '/pages/learning/swift-learning/swift-learning.html',
+    category: 'General Purpose',
+    icon: 'fa-swift',
+    isBrandIcon: true,
+    langKey: 'swift',
+    desc: "Apple's modern, type-safe language for iOS, macOS, and beyond. Optionals, protocols, and closures make safe, expressive code the default.",
+    svgIcon: `<img src="https://cdn.simpleicons.org/swift/f2a88a" alt="Swift" style="width:1em;height:1em;display:block;">`
+  },
+
+  // ── Mobile / Cross-platform ──
+  {
+    name: 'Flutter',
+    path: '/pages/learning/flutter-learning/flutter-learning.html',
+    category: 'General Purpose',
+    icon: 'fa-mobile-screen',
+    isBrandIcon: false,
+    langKey: 'flutter',
+    desc: 'Google\'s UI toolkit for building beautiful, natively compiled apps for mobile, web, and desktop from a single Dart codebase.',
+    svgIcon: `<img src="https://cdn.simpleicons.org/flutter/a8c8dc" alt="Flutter" style="width:1em;height:1em;display:block;">`
+  },
+  {
+    name: 'Dart',
+    path: '/pages/learning/dart-learning/dart-learning.html',
+    category: 'General Purpose',
+    icon: 'fa-code',
+    isBrandIcon: false,
+    langKey: 'dart',
+    langColor: '#0175C2',
+    desc: 'Fast, client-optimized language that powers Flutter. Sound null safety, rich collections, and async streams for apps on any platform.',
+    svgIcon: `<img src="https://cdn.simpleicons.org/dart/0175C2" alt="Dart" style="width:1em;height:1em;display:block;">`
+  },
 ];
 
 /* ─── Categories ─── */
@@ -104,14 +159,19 @@ const categories = ['All', 'General Purpose', 'Systems', 'Web', 'Enterprise'];
 /* ─── Language brand colors for icons ─── */
 const langColors = {
   python: '#3572A5',
+  ruby: '#CC342D',
   javascript: '#f7df1e',
   typescript: '#3178C6',
   java: '#b07219',
   cplusplus: '#f34b7d',
   c: '#888888',
   php: '#777BB4',
-  rust: '#dea584',
   solidity: '#fbc4ab',
+  kotlin: '#a8c8f0',
+  csharp: '#e8b0b0',
+  swift: '#f2a88a',
+  flutter: '#a8c8dc',
+  dart: '#0175C2',
 };
 
 /* ─── DOM refs ─── */
@@ -184,7 +244,7 @@ function render() {
 
   emptyState.style.display = 'none';
   grid.innerHTML = filtered.map((v, i) => {
-    const iconColor = langColors[v.langKey] || 'var(--lang-primary)';
+    const iconColor = v.langColor || langColors[v.langKey] || 'var(--lang-primary)';
     let iconHtml;
     if (v.svgIcon) {
       iconHtml = v.svgIcon;
@@ -236,6 +296,8 @@ grid.addEventListener('click', (e) => {
 
 /* ─── Keyboard shortcut: ⌘K / Ctrl+K ─── */
 document.addEventListener('keydown', (e) => {
+  // Keyboard shortcuts are desktop-only — no-op on mobile viewports (< 768px).
+  if (!window.areKeyboardShortcutsEnabled()) return;
   if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
     e.preventDefault();
     searchInput.focus();

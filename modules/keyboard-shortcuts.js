@@ -1,3 +1,5 @@
+import { areKeyboardShortcutsEnabled } from './shortcut-guard.js';
+
 const isMac = /Mac|iPhone|iPad|iPod/.test(navigator.platform || '') ||
   (navigator.userAgentData && navigator.userAgentData.platform === 'macOS');
 
@@ -32,32 +34,37 @@ export function initKeyboardShortcuts() {
 
   updateShortcutLabels();
 
+  // Shortcuts rely on a physical keyboard, so they are never bound on
+  // mobile-sized viewports (< 768px). The toggle button / modal wiring above
+  // stays active so the shortcuts list remains reachable by tapping.
+  if (!areKeyboardShortcutsEnabled()) return;
+
   document.addEventListener('keydown', function(e) {
     const tag = e.target.tagName;
     const isEditing = tag === 'INPUT' || tag === 'TEXTAREA' || e.target.isContentEditable;
 
-    if (isModKey(e) && e.key === 'k') {
+if (!isEditing && e.ctrlKey && e.key === 'k') {
       e.preventDefault();
       const searchInput = document.getElementById('searchInput');
       if (searchInput) searchInput.focus();
     }
-    if (e.altKey && e.code === 'KeyH') {
+    if (!isEditing && e.altKey && e.key === 'h') {
       e.preventDefault();
       window.location.href = '#home';
     }
-    if (e.altKey && e.code === 'KeyT') {
+    if (!isEditing && e.altKey && e.key === 't') {
       e.preventDefault();
       window.location.href = '/pages/learning/learning-topics.html';
     }
-    if (e.altKey && e.code === 'KeyP') {
+    if (!isEditing && e.altKey && e.key === 'p') {
       e.preventDefault();
       window.location.href = '/pages/practice/problems.html';
     }
-    if (e.altKey && e.code === 'KeyQ') {
+    if (!isEditing && e.altKey && e.key === 'q') {
       e.preventDefault();
       window.location.href = '#quiz';
     }
-    if (e.altKey && e.code === 'KeyD') {
+    if (!isEditing && e.altKey && e.key === 'd') {
       e.preventDefault();
       window.location.href = '#dashboard';
     }
@@ -89,6 +96,21 @@ export function initKeyboardShortcuts() {
         }, 250);
       }
     }
+    /* ── D — Toggle dark/light theme ── */
+    if (
+      (e.key === 'd' || e.key === 'D') &&
+      !isEditing &&
+      !e.ctrlKey &&
+      !e.metaKey &&
+      !e.altKey
+    ) {
+      e.preventDefault();
+      if (typeof window.toggleTheme === 'function') {
+        window.toggleTheme();
+      }
+      return;
+    }
+
     if (e.key === 'Escape') {
       const modal = document.getElementById('shortcutsModal');
       if (modal && modal.style.display !== 'none') {
