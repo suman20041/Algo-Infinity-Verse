@@ -186,7 +186,16 @@ const quizzes = [
     icon: 'fa-microchip',
     desc: 'Bitwise operators, masks, XOR tricks, subset generation, and space-efficient techniques.',
     difficulty: 'medium',
-    questions: 14,
+    questions: 64,
+  },
+  {
+    name: 'Backtracking',
+    path: '/pages/topic-quiz/topic-quiz.html?topic=backtracking',
+    category: 'Advanced',
+    icon: 'fa-undo-alt',
+    desc: 'N-Queens, Sudoku, permutations, subsets, and constraint based search with pruning.',
+    difficulty: 'medium',
+    questions: 50,
   },
 
   // ── Special ──
@@ -447,6 +456,8 @@ grid.addEventListener('click', (e) => {
 
 /* ─── Keyboard shortcut: ⌘K / Ctrl+K ─── */
 document.addEventListener('keydown', (e) => {
+  // Keyboard shortcuts are desktop-only — no-op on mobile viewports (< 768px).
+  if (!window.areKeyboardShortcutsEnabled()) return;
   if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
     e.preventDefault();
     searchInput.focus();

@@ -20,54 +20,26 @@ import { redisAvailable, redisClient } from '../jobs/queue.js';
 
 export const activeRefreshFamilies = new Map();
 export const revokedUserSessions = new Map();
-const signupAttempts = new Map();
 
 export async function revokeAllUserSessions(userId) {
   if (!userId) return;
   const nowSeconds = Math.floor(Date.now() / 1000);
   if (redisAvailable && redisClient) {
-    await redisClient.set(
-      `user_revocation:${userId}`,
-      nowSeconds,
-      'EX',
-      ACCESS_TOKEN_MAX_AGE_SECONDS
-    );
+    try {
+      await redisClient.set(
+        `user_revocation:${userId}`,
+        nowSeconds,
+        'EX',
+        ACCESS_TOKEN_MAX_AGE_SECONDS
+      );
+    } catch (err) {
+      console.error('[Redis] Error in revokeAllUserSessions:', err.message);
+      revokedUserSessions.set(userId, nowSeconds);
+    }
   } else {
     revokedUserSessions.set(userId, nowSeconds);
   }
 }
-const loginAttempts = new Map();
-
-export const _signupSweeper = setInterval(() => {
-  const now = Date.now();
-  for (const [identifier, timestamps] of signupAttempts) {
-    const fresh = timestamps.filter((t) => now - t < SIGNUP_WINDOW_MS);
-    if (fresh.length === 0) {
-      signupAttempts.delete(identifier);
-    } else {
-      signupAttempts.set(identifier, fresh);
-    }
-  }
-}, SIGNUP_WINDOW_MS);
-
-if (_signupSweeper.unref) _signupSweeper.unref();
-
-// Mirrors the signup-rate-limit sweeper above. #2535: isLoginRateLimited /
-// LOGIN_WINDOW_MS were previously imported by authHandlers.js without ever
-// being defined/exported here.
-export const _loginSweeper = setInterval(() => {
-  const now = Date.now();
-  for (const [identifier, timestamps] of loginAttempts) {
-    const fresh = timestamps.filter((t) => now - t < LOGIN_WINDOW_MS);
-    if (fresh.length === 0) {
-      loginAttempts.delete(identifier);
-    } else {
-      loginAttempts.set(identifier, fresh);
-    }
-  }
-}, LOGIN_WINDOW_MS);
-
-if (_loginSweeper.unref) _loginSweeper.unref();
 
 const TRUSTED_PROXIES = new Set(
   (process.env.TRUSTED_PROXIES || '')
@@ -101,38 +73,6 @@ export function getClientIdentifier(req) {
   }
 
   return remoteAddress;
-}
-
-export function isSignupRateLimited(identifier) {
-  const now = Date.now();
-  const attempts = signupAttempts.get(identifier) || [];
-  const recentAttempts = attempts.filter((t) => now - t < SIGNUP_WINDOW_MS);
-  signupAttempts.set(identifier, recentAttempts);
-  return recentAttempts.length >= SIGNUP_RATE_LIMIT;
-}
-
-export function isLoginRateLimited(identifier) {
-  const now = Date.now();
-  const attempts = loginAttempts.get(identifier) || [];
-  const recentAttempts = attempts.filter((t) => now - t < LOGIN_WINDOW_MS);
-  loginAttempts.set(identifier, recentAttempts);
-  return recentAttempts.length >= LOGIN_RATE_LIMIT;
-}
-
-export function recordLoginAttempt(identifier) {
-  const now = Date.now();
-  const attempts = loginAttempts.get(identifier) || [];
-  const recentAttempts = attempts.filter((t) => now - t < LOGIN_WINDOW_MS);
-  recentAttempts.push(now);
-  loginAttempts.set(identifier, recentAttempts);
-}
-
-export function recordSignupAttempt(identifier) {
-  const now = Date.now();
-  const attempts = signupAttempts.get(identifier) || [];
-  const recentAttempts = attempts.filter((t) => now - t < SIGNUP_WINDOW_MS);
-  recentAttempts.push(now);
-  signupAttempts.set(identifier, recentAttempts);
 }
 
 export async function normalizeAuthDelay() {
@@ -221,7 +161,7 @@ export function validateFamilyId(familyId) {
   return null;
 }
 
-export function createAccessToken(user) {
+export async function createAccessToken(user, sessionId = crypto.randomUUID()) {
   const validationError = validateUserForToken(user);
   if (validationError) {
     throw new Error(validationError);
@@ -236,10 +176,24 @@ export function createAccessToken(user) {
       iat: nowSeconds,
       exp: nowSeconds + ACCESS_TOKEN_MAX_AGE_SECONDS,
       type: 'access',
+      sid: sessionId,
     })
   );
   const body = `${header}.${payload}`;
-  return `${body}.${sign(body)}`;
+  const token = `${body}.${sign(body)}`;
+
+  const sessionHash = crypto.createHash('sha256').update(token).digest('hex');
+
+  if (redisAvailable && redisClient) {
+    try {
+      await redisClient.set(`session:${sessionHash}`, user.id, 'EX', ACCESS_TOKEN_MAX_AGE_SECONDS);
+      await redisClient.sadd(`user_sessions:${user.id}`, sessionHash);
+    } catch (err) {
+      console.error('[Redis] Error storing session hash:', err.message);
+    }
+  }
+
+  return token;
 }
 
 export async function createRefreshToken(
@@ -252,7 +206,12 @@ export async function createRefreshToken(
     throw new Error(validationError);
   }
   if (redisAvailable && redisClient) {
-    await redisClient.set(`refresh:${familyId}`, nonce, 'EX', REFRESH_TOKEN_MAX_AGE_SECONDS);
+    try {
+      await redisClient.set(`refresh:${familyId}`, nonce, 'EX', REFRESH_TOKEN_MAX_AGE_SECONDS);
+    } catch (err) {
+      console.error('[Redis] Error in createRefreshToken:', err.message);
+      activeRefreshFamilies.set(familyId, { currentNonce: nonce });
+    }
   } else {
     activeRefreshFamilies.set(familyId, { currentNonce: nonce });
   }
@@ -278,7 +237,12 @@ export async function revokeTokenFamily(familyId) {
     throw new Error(validationError);
   }
   if (redisAvailable && redisClient) {
-    await redisClient.del(`refresh:${familyId}`);
+    try {
+      await redisClient.del(`refresh:${familyId}`);
+    } catch (err) {
+      console.error('[Redis] Error in revokeTokenFamily:', err.message);
+      activeRefreshFamilies.delete(familyId);
+    }
   } else {
     activeRefreshFamilies.delete(familyId);
   }
@@ -324,7 +288,7 @@ export function verifyToken(token, expectedType) {
   }
 }
 
-export function verifyAccessToken(token) {
+export async function verifyAccessToken(token) {
   const session = verifyToken(token, 'access');
   if (!session) return null;
 
@@ -335,7 +299,35 @@ export function verifyAccessToken(token) {
     }
   }
 
+  if (redisAvailable && redisClient) {
+    try {
+      const sessionHash = crypto.createHash('sha256').update(token).digest('hex');
+      const exists = await redisClient.exists(`session:${sessionHash}`);
+      if (!exists) return null;
+    } catch (err) {
+      console.error('[Redis] Error checking session hash:', err.message);
+    }
+  }
+
   return session;
+}
+
+export async function revokeOtherUserSessions(userId, currentToken) {
+  if (!userId || !currentToken) return;
+  if (redisAvailable && redisClient) {
+    try {
+      const currentHash = crypto.createHash('sha256').update(currentToken).digest('hex');
+      const hashes = await redisClient.smembers(`user_sessions:${userId}`);
+      for (const hash of hashes) {
+        if (hash !== currentHash) {
+          await redisClient.del(`session:${hash}`);
+          await redisClient.srem(`user_sessions:${userId}`, hash);
+        }
+      }
+    } catch (err) {
+      console.error('[Redis] Error in revokeOtherUserSessions:', err.message);
+    }
+  }
 }
 
 export async function verifyRefreshToken(token) {
@@ -343,10 +335,15 @@ export async function verifyRefreshToken(token) {
   if (!session) return null;
 
   if (redisAvailable && redisClient) {
-    const currentNonce = await redisClient.get(`refresh:${session.familyId}`);
-    if (!currentNonce) return null;
-    if (currentNonce !== session.nonce) {
-      await revokeTokenFamily(session.familyId);
+    try {
+      const currentNonce = await redisClient.get(`refresh:${session.familyId}`);
+      if (!currentNonce) return null;
+      if (currentNonce !== session.nonce) {
+        await revokeTokenFamily(session.familyId);
+        return null;
+      }
+    } catch (err) {
+      console.error('[Redis] Error in verifyRefreshToken:', err.message);
       return null;
     }
   } else {
