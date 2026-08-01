@@ -3,6 +3,7 @@
 
   var lastReport = null;
 
+  
   var PROJECTION_SNIPPET =
     "const projection = {\n" +
     "  when('OrderPlaced', (state, e) => ({ ...state, status: 'placed', total: e.payload.total })),\n" +
